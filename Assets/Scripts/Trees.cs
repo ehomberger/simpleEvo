@@ -1,108 +1,144 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Trees : Organic {
 	// Use this for initialization
 	public int differences;
-	string[] perfect;
+	//string[] perfect;
 	new void Start(){
 		base.Start ();
+		base.averageAge = 50;
+		reproductiveRange = 30;
+		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
 
-		base.aveAge = 50;
-
-		base.mat.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
-		this.GetComponent<MeshRenderer> ().material = mat;
-
+		//base.material.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
+		//GetComponentsInChildren<SpriteRenderer>()[0].material = material;
+		//GetComponentsInChildren<Renderer>[0].material;
+		setColor();
 		differences = 0;
 
-		perfect = new string[3];
-		perfect [0] = "00";
-		perfect [1] = "00";
-		perfect [2] = "99";
+		// perfect = new string[3];
+		// perfect [0] = "00";
+		// perfect [1] = "00";
+		// perfect [2] = "99";
 
-		for (int i = 0; i < perfect.Length; i++) {
-			for (int j = 0; j < perfect[i].Length; j++){
-				if (DNA[i][j] == perfect[i][j]){
-					differences++;
-				}
-			}
-		}
+		// for (int i = 0; i < perfect.Length; i++) {
+		// 	for (int j = 0; j < perfect[i].Length; j++){
+		// 		if (DNA[i][j] == perfect[i][j]){
+		// 			differences++;
+		// 		}
+		// 	}
+		// }
 	}
 
 	public override void checkDeath(){
 		float threshold;
-		threshold = 50 +(age - aveAge*2) + (differences * 2);
+		//threshold = 50 +(age - averageAge*2) + (differences * 2);
+		threshold = 75; //placeholder value, ~25% of trees will die 
 		int attempt;
 
 		attempt = Random.Range (0, 100);
 
 		if (attempt < threshold) {
-			Destroy(this.gameObject);
+			//Destroy(this.gameObject);
 		}
 
 	}
 
-	public override float repro(){
+	public override float reproduce(){
 		Debug.Log ("Reproducing");
-		GameObject[] options = base.getNearby ("Tree");
-		Trees child;
+		List<GameObject> options = base.getNearby("Tree");
+		Trees offspring;
 		int random;
 		float randomX, randomZ;
-		string[] childDNA = new string[3];
+		string[] offspringDNA = new string[DNA.Length];
 		string[] chosen;
 		string newSection = "";
 
-		Debug.Log ("choosing mate from " + options.Length + " options " + options[0].name);
+		//Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
 	
-		if (options.Length > 1) {
-
-			random = Random.Range (1, options.Length);
+		if (options.Count > 1) {
+			random = Random.Range (1, options.Count);
 			chosen = options[random].GetComponent<Trees>().getDNA();
 
+			// For each gene, pick one from either parent
 			for (int i = 0; i < base.DNA.Length; i++) {
-				for (int j = 0; j < base.DNA[i].Length; j++) {
-					if (Random.Range (0, 2) == 1) {
-						newSection += base.DNA[i][j];
-					} 
-					else {
-						newSection += chosen [i] [j];
-					}
+				// pick each gene from one parent
+				// this should be faster than the commented code
+				int geneA = (int)Random.Range(1,2);
+				int geneB = (int)Random.Range(1,2);
 
-					//Debug.Log("newSection is" + newSection);
+				if( geneA == 1 ) newSection += DNA[i][0];
+				else			 newSection += chosen[i][0];
 
-				}
-				childDNA[i] = newSection;
+				if( geneB == 1 ) newSection += DNA[i][1];
+				else			 newSection += chosen[i][1]; 
+				
+				// for (int j = 0; j < base.DNA[i].Length; j++) {
+				// 	if (Random.Range (0, 2) == 1) {
+				// 		newSection += base.DNA[i][j];
+				// 	} 
+				// 	else {
+				// 		newSection += chosen [i][j];
+				// 	}
+
+				// 	//Debug.Log("newSection is" + newSection);
+
+				// }
+				offspringDNA[i] = newSection;
 				newSection = "";
 			}
-		} 
+		}
 		else {
-			for (int i = 0; i < this.DNA.Length; i++){
-				childDNA[i] = base.DNA[i];
-			}
+			offspringDNA = DNA;
 		}
 
 
-		random = Random.Range (0, 100);
+		offspring = Instantiate (base.offspringPrefab) as Trees;
+		offspring.transform.parent = gameObject.transform.parent;
+		offspring.setDNA(offspringDNA);
+		Debug.Log ("Setting DNA to " + offspringDNA [0] + " " + offspringDNA [1] + " " + offspringDNA [2]);
 
 		for (int i = 0; i < base.DNA.Length; i++){
 			for (int j = 0; j < base.DNA[i].Length; j++){
-				if(Random.Range (0, 100) < base.mutChance){
-					childDNA[i] = base.replace(j, childDNA[i]);
+				if(Random.Range (0, 100) < base.mutationChance){
+					offspringDNA[i] = base.replace(j, offspringDNA[i]);
+				}
+				if (Random.Range(0f, 200f) <= frameShiftChance){ //frameshift chance is .5
+					int index = (int)Random.Range(1, DNA.Length*2) - 1;
+					offspring.frameShiftInsert(index);
 				}
 			}
 		}
 
-		randomX = Random.Range (-20, 20);
-		randomZ = Random.Range (-20, 20);
+		randomX = Random.Range (-reproductiveRange, reproductiveRange);
+		randomZ = Random.Range (-reproductiveRange, reproductiveRange);
 
-		child = Instantiate (base.prefab) as Trees;
 
-		Debug.Log ("Setting DNA to " + childDNA [0] + " " + childDNA [1] + " " + childDNA [2]);
-		child.setDNA(childDNA);
-		child.transform.position = new Vector3(this.transform.position.x + randomX, this.transform.position.y, this.transform.position.z + randomZ);
-		mat.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
+		// Ensure the tree doesn't spawn inside of another's collder
+		Vector3 boxDimensions = new Vector3(5, 2, 5);
+		Vector3 spawnPosition = new Vector3(randomX, Terrain.activeTerrain.SampleHeight(new Vector3(randomX, 0, randomZ)), randomZ);
+		int attempts = 0;
+		while( Physics.OverlapBox(spawnPosition, boxDimensions).Length > 1 && attempts < 5)
+		{
+			randomX = Random.Range (-reproductiveRange, reproductiveRange);
+			randomZ = Random.Range (-reproductiveRange, reproductiveRange);
+			spawnPosition.x = randomX;
+			spawnPosition.z = randomZ;
+			attempts++;
+		}
+		offspring.transform.position = new Vector3(this.transform.position.x + randomX, this.transform.position.y, this.transform.position.z + randomZ);
+		
 		return 10;
 	}
 
+	// Scale of trees is linear, should replace with some lnx function
+	public override void setScale(){
+		//scale = DNA[3][1].toByte
+		scale = 2.67f * (nutrition + 1) - 2.3f;
+	}
 
+	public override void updateScale(){
+
+	}
 }
