@@ -5,39 +5,50 @@ using System.Collections.Generic;
 
 public abstract class Organic : MonoBehaviour {
 
-	//public Material material;
-	public Organic offspringPrefab;
-	public Renderer colorChange;
-	public string[] DNA = new string[numGenes];
+	// Gameobject
+	public  Renderer colorChange;
+	private Terrain  myTerrain;
+	
+	// Genetics variables
+	public Organic 	  offspringPrefab;
+	public string[]   DNA = new string[numGenes];
 	public static int numGenes;
-	public int mutationChance;
-	public int reproductiveRange;
-	private int nextAge;
-	private int repduceRange;
-	public int frameShiftChance; //remove this as soon as possible, it's dumb
-	public float age;
-	public float averageAge;
-	public float scale;
+	public int 		  frameShiftChance; //remove this as soon as possible, it's dumb
+	public int 		  mutationChance;
+
+	// Age variables
+	private int   nextAge;
+	public  float age;
+	public  float averageAge;
+	public  float timeUntilReproduce;
+
+	// Physical Size variables
+	public  bool  isGrowing;
+	public  float scale;
+	public  float growthTime;
+	public  int   reproductiveRange;
+	private int   reproduceRange;
+
+	// Nurition variables
 	public float nutrition;
 	public float healthModifer;
-	public float timeUntilReproduce;
-	private Terrain myTerrain;
 
-	// Use this for initialization
+	
+	// Initialization
 	public void Start () 
 	{
 		myTerrain = Terrain.activeTerrain;
 		if( !isOnTerrain() ){
 			Destroy(gameObject);
 		}
-		checkStartDNA(); // Ensures that the Organic has DNA
-		setYTransform(); // Place the organic on the map so it's pretty
+		checkStartDNA(); 	 // Ensures that the Organic has DNA
+		setYTransform(); 	 // Place the organic on the map so it's pretty
 		setGameObjectName(); // Rename the organic so it's easy to identify
-		getNutrition();  // Get the organic's initial nutrition
-		setScale();		 // set the initial scale
-		//material = new Material (material);
-
+		setNutrition();  	 // Get the organic's initial nutrition
+		setScale();		 	 // set the initial scale
 		timeUntilReproduce = 20;
+		isGrowing = true;
+
 		age = 0;
 		mutationChance = 2;
 		nextAge = 1;
@@ -46,18 +57,26 @@ public abstract class Organic : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if( isSimRunning() ){
-			age += Time.deltaTime;// * transform.parent.GetComponent<TreeTracker>().gameSpeed;
-			timeUntilReproduce -= Time.deltaTime;
-			if (age > nextAge) {
-				checkDeath();
-				nextAge++;
-				updateScale();
+		if( isSimRunning() )
+		{
+		age += Time.deltaTime;// * transform.parent.GetComponent<TreeTracker>().gameSpeed;
+		timeUntilReproduce -= Time.deltaTime;
+		if (age > nextAge) {
+			checkDeath();
+			nextAge++;
+			updateScale();
+			if (age > growthTime){
+				isGrowing = false;
 			}
-			if (timeUntilReproduce <= 0) 
-			{
-				timeUntilReproduce = reproduce() + Random.Range(0, 6) - 3;
-			}
+		}
+		if (timeUntilReproduce <= 0) 
+		{
+			timeUntilReproduce = reproduce() + Random.Range(0, 6) - 3;
+		}
+		if (isGrowing)
+		{
+			updateScale();
+		}
 		}
 	}
 
@@ -70,7 +89,7 @@ public abstract class Organic : MonoBehaviour {
 	
 		newDNA = newDNA.Insert(j, newHex);
 		Debug.Log ("Returning " + newDNA);
-		Debug.Log("old is " + this.DNA[0]);
+		Debug.Log ("old is " + this.DNA[0]);
 
 		setGameObjectName(); // set the name of the object to match update DNA
 
@@ -83,7 +102,7 @@ public abstract class Organic : MonoBehaviour {
 		List<GameObject> nearby = new List<GameObject>();
 		
 		for (int i = 0; i < options.Length; i++) {
-			if (options[i].gameObject.tag == targetTag){
+			if (options[i].gameObject.tag == targetTag) {
 				nearby.Add(options[i].gameObject);
 			}
 		}
@@ -186,8 +205,12 @@ public abstract class Organic : MonoBehaviour {
 		return transform.parent.GetComponent<TreeTracker>().isRunning;
 	}
 
-	public void getNutrition(){
-		nutrition = myTerrain.GetComponent<NutrientMap>().getValue(transform.position);
+	public void setNutrition(){
+		Debug.Log ("Setting nutrition\n");
+		float mapValue = myTerrain.GetComponent<NutrientMap>().getValue(transform.position);
+		float modValue = myTerrain.GetComponent<NutrientMap>().getModifier(transform.position);
+	
+		nutrition = mapValue + modValue;
 	}
 
 	public abstract void setScale();

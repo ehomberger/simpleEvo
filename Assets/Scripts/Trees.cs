@@ -4,13 +4,14 @@ using System.Collections.Generic;
 public class Trees : Organic {
 	// Use this for initialization
 	public int differences;
+	
 	//string[] perfect;
 	new void Start(){
 		base.Start ();
 		base.averageAge = 50;
 		reproductiveRange = 30;
 		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
-
+		growthTime = System.Convert.ToByte(DNA[4], 16) * 32;
 		//base.material.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
 		//GetComponentsInChildren<SpriteRenderer>()[0].material = material;
 		//GetComponentsInChildren<Renderer>[0].material;
@@ -73,18 +74,7 @@ public class Trees : Organic {
 
 				if( geneB == 1 ) newSection += DNA[i][1];
 				else			 newSection += chosen[i][1]; 
-				
-				// for (int j = 0; j < base.DNA[i].Length; j++) {
-				// 	if (Random.Range (0, 2) == 1) {
-				// 		newSection += base.DNA[i][j];
-				// 	} 
-				// 	else {
-				// 		newSection += chosen [i][j];
-				// 	}
 
-				// 	//Debug.Log("newSection is" + newSection);
-
-				// }
 				offspringDNA[i] = newSection;
 				newSection = "";
 			}
@@ -135,10 +125,11 @@ public class Trees : Organic {
 	// Scale of trees is linear, should replace with some lnx function
 	public override void setScale(){
 		//scale = DNA[3][1].toByte
-		scale = 2.67f * (nutrition + 1) - 2.3f;
+		// scale = 0.1fLn(x + .1) + 1 + 0.018x^2
+		scale = 0.1f * Mathf.Log(nutrition + 0.1f) + 1f + 0.018f*nutrition*nutrition;
 	}
 
 	public override void updateScale(){
-
+		scale += .1f;
 	}
 }

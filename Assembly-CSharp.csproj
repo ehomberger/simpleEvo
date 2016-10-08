@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\Billboard.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\NutrientMap.cs" />
+     <Compile Include="Assets\Scripts\NutrientMap_Old.cs" />
      <Compile Include="Assets\Scripts\Organic.cs" />
      <Compile Include="Assets\Scripts\Organic_old.cs" />
      <Compile Include="Assets\Scripts\TreeTracker.cs" />

@@ -5,7 +5,7 @@ public class TreeTracker : MonoBehaviour{
     public bool isRunning = true;
     public float gameSpeed = 1.0f;
     
-    void OnGUI(){
+    void OnGUI() {
         if( GUI.Button( new Rect(110, 10, 80, 20), "Start/Stop") ){
             isRunning = !isRunning;
         }
