@@ -23,9 +23,9 @@ public abstract class Organic : MonoBehaviour {
 	public  float timeUntilReproduce;
 
 	// Physical Size variables
-	public  bool  isGrowing;
 	public  float scale;
-	public  float growthTime;
+	public  float deltaScale;
+	public  float nutritionFactor;
 	public  int   reproductiveRange;
 	private int   reproduceRange;
 
@@ -45,9 +45,9 @@ public abstract class Organic : MonoBehaviour {
 		setYTransform(); 	 // Place the organic on the map so it's pretty
 		setGameObjectName(); // Rename the organic so it's easy to identify
 		setNutrition();  	 // Get the organic's initial nutrition
-		setScale();		 	 // set the initial scale
+		setNutritionFactor();// set the initial scale
+		setScale();
 		timeUntilReproduce = 20;
-		isGrowing = true;
 
 		age = 0;
 		mutationChance = 2;
@@ -59,24 +59,20 @@ public abstract class Organic : MonoBehaviour {
 	{
 		if( isSimRunning() )
 		{
-		age += Time.deltaTime;// * transform.parent.GetComponent<TreeTracker>().gameSpeed;
-		timeUntilReproduce -= Time.deltaTime;
-		if (age > nextAge) {
-			checkDeath();
-			nextAge++;
-			updateScale();
-			if (age > growthTime){
-				isGrowing = false;
+			age += Time.deltaTime;// * transform.parent.GetComponent<TreeTracker>().gameSpeed;
+			timeUntilReproduce -= Time.deltaTime;
+			
+			if (age > nextAge) {
+				checkDeath();
+				nextAge++;
 			}
-		}
-		if (timeUntilReproduce <= 0) 
-		{
-			timeUntilReproduce = reproduce() + Random.Range(0, 6) - 3;
-		}
-		if (isGrowing)
-		{
+			
 			updateScale();
-		}
+			
+			if (timeUntilReproduce <= 0) 
+			{
+				timeUntilReproduce = reproduce() + Random.Range(0, 6) - 3;
+			}
 		}
 	}
 
@@ -110,6 +106,9 @@ public abstract class Organic : MonoBehaviour {
 		return nearby;
 	}
 
+	// 
+	// 
+	// 
 	public List<GameObject> getNearby(string targetTag, int radius)
 	{
 		Collider[] options = Physics.OverlapSphere (this.transform.position, radius);
@@ -139,7 +138,7 @@ public abstract class Organic : MonoBehaviour {
 		Vector3 currentPosition = transform.position;
 		float 	targetHeight  	= myTerrain.SampleHeight(currentPosition);
 		Vector3 targetPosition  = new Vector3(currentPosition.x, targetHeight, currentPosition.z);
-		transform.position = targetPosition;
+		transform.position 		= targetPosition;
 	}
 
 	public void checkStartDNA(){
@@ -207,18 +206,19 @@ public abstract class Organic : MonoBehaviour {
 
 	public void setNutrition(){
 		Debug.Log ("Setting nutrition\n");
-		float mapValue = myTerrain.GetComponent<NutrientMap>().getValue(transform.position);
-		float modValue = myTerrain.GetComponent<NutrientMap>().getModifier(transform.position);
-	
-		nutrition = mapValue + modValue;
+		nutrition = myTerrain.GetComponent<NutrientMap>().getValue(transform.position);
 	}
 
-	public abstract void setScale();
+	public abstract void  setNutritionFactor();
 
-	public abstract void updateScale();
+	public abstract void  setDeltaScale(float top);
+
+	public abstract void  updateScale();
+
+	public abstract void  setScale();
 
 	public abstract float reproduce();
 
-	public abstract void checkDeath();
+	public abstract void  checkDeath();
 
 }

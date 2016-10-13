@@ -11,37 +11,36 @@ public class Trees : Organic {
 		base.averageAge = 50;
 		reproductiveRange = 30;
 		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
-		growthTime = System.Convert.ToByte(DNA[4], 16) * 32;
-		//base.material.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
-		//GetComponentsInChildren<SpriteRenderer>()[0].material = material;
-		//GetComponentsInChildren<Renderer>[0].material;
+//		base.material.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
+//		GetComponentsInChildren<SpriteRenderer>()[0].material = material;
+//		GetComponentsInChildren<Renderer>[0].material;
 		setColor();
 		differences = 0;
 
-		// perfect = new string[3];
-		// perfect [0] = "00";
-		// perfect [1] = "00";
-		// perfect [2] = "99";
+// 		perfect = new string[3];
+// 		perfect [0] = "00";
+// 		perfect [1] = "00";
+// 		perfect [2] = "99";
 
-		// for (int i = 0; i < perfect.Length; i++) {
-		// 	for (int j = 0; j < perfect[i].Length; j++){
-		// 		if (DNA[i][j] == perfect[i][j]){
-		// 			differences++;
-		// 		}
-		// 	}
-		// }
+// 		for (int i = 0; i < perfect.Length; i++) {
+// 			for (int j = 0; j < perfect[i].Length; j++){
+// 				if (DNA[i][j] == perfect[i][j]){
+// 					differences++;
+// 				}
+//		 	}
+// 		}
 	}
 
 	public override void checkDeath(){
 		float threshold;
-		//threshold = 50 +(age - averageAge*2) + (differences * 2);
+//		threshold = 50 +(age - averageAge*2) + (differences * 2);
 		threshold = 75; //placeholder value, ~25% of trees will die 
 		int attempt;
 
 		attempt = Random.Range (0, 100);
 
 		if (attempt < threshold) {
-			//Destroy(this.gameObject);
+//		Destroy(this.gameObject);
 		}
 
 	}
@@ -56,7 +55,7 @@ public class Trees : Organic {
 		string[] chosen;
 		string newSection = "";
 
-		//Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
+//		Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
 	
 		if (options.Count > 1) {
 			random = Random.Range (1, options.Count);
@@ -123,13 +122,44 @@ public class Trees : Organic {
 	}
 
 	// Scale of trees is linear, should replace with some lnx function
-	public override void setScale(){
-		//scale = DNA[3][1].toByte
-		// scale = 0.1fLn(x + .1) + 1 + 0.018x^2
-		scale = 0.1f * Mathf.Log(nutrition + 0.1f) + 1f + 0.018f*nutrition*nutrition;
+	public override void setNutritionFactor(){
+		nutritionFactor = Mathf.Pow(nutrition, 1.0f/5.0f);
+	}
+
+	public override void setDeltaScale(float top){
+		deltaScale = nutritionFactor * (top / scale);
 	}
 
 	public override void updateScale(){
-		scale += .1f;
+		setDeltaScale(0.001f);
+		scale += deltaScale;
+		transform.localScale = new Vector3(scale, scale, scale);
+	}
+
+	public override void setScale(){
+		scale = 0.05f;
+		transform.localScale = new Vector3(scale, scale, scale);
 	}
 }
+
+
+/* Gene guide
+ * 
+ *
+ *
+ *
+ */
+
+ /*
+   Tree starts at school 0.25f
+   Trees have nutrition from 0.000 - 1.000
+   Maxium scale of tree is based on cuberoot(DNA[3])
+ */
+
+ /*
+tree's nutritionFactor is fifth root of nutrition
+nutritionFactor is a coefficient for the growthRate
+growthRate is delta scale based on size of the tree
+delta scale is 1/growthRate
+change in size over time is 
+ */

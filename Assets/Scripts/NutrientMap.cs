@@ -3,33 +3,26 @@ using System.Collections.Generic;
 
 public class NutrientMap : MonoBehaviour {
 
-    public Texture2D nutrientMap;
-    public float[,] modifiedMap;
-    private int mapWidth;
+    public  Texture2D nutrientMap;
+    private float[,]  mapAsArray;
+    private int       mapDimension;
 
     // 
     public void Start(){
         if( nutrientMap == null )
             Debug.Log("You forgot your NutrientMap");
-        
-        mapWidth    = nutrientMap.width;
-        modifiedMap = new float[mapWidth, mapWidth];
-        Debug.Log("modifiedMap[10][10] = " + modifiedMap[10, 10]);
+
+        mapDimension = nutrientMap.width;
+        mapAsArray   = new float[mapDimension, mapDimension];
+        convertImageTo2DArray(nutrientMap);
+        Debug.Log("mapAsArray dimensions are " + mapAsArray.GetLength(0) + "x" + mapAsArray.GetLength(1) );
     }
 
     // Get the nutrient level at given (x, z) coordinate
     public float getValue(Vector3 position){
-        int   x = (int)position.x;
-        int   z = (int)position.z;
-        float mapValue = nutrientMap.GetPixel(x, z).grayscale;
-
-        return mapValue;
-    }
-
-    public float getModifier(Vector3 position){
-        int   x = (int)position.x;
-        int   z = (int)position.z;
-        float mapValue = modifiedMap[x, z];
+        int x = (int)position.x;
+        int z = (int)position.z;
+        float mapValue = mapAsArray[x, z];
 
         return mapValue;
     }
@@ -38,6 +31,21 @@ public class NutrientMap : MonoBehaviour {
     public void setValue(Vector3 position, float updateValue){
         int x = (int)position.x;
         int z = (int)position.z;
-        modifiedMap[x, z] += updateValue;
+        mapAsArray[x, z] += updateValue;
+    }
+
+    // Probably a terrible idea, but here we do a one-time scan through the map
+    // and turn all of the pixel's grayscale values into a 2d array
+    public void convertImageTo2DArray(Texture2D mapImage){
+        Debug.Log ("Converting image to array");
+
+        for (int i = 0; i < mapDimension; i++)
+            for (int j = 0; j < mapDimension; j++)
+                mapAsArray[i, j] = mapImage.GetPixel(i, j).grayscale;
+
+    }
+
+    public bool startupComplete(){
+        return mapAsArray[0, 0] != null;
     }
 }

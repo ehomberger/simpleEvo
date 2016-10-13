@@ -97,8 +97,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000014263799530}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 12.72, z: -0.01}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalPosition: {x: 0, y: 10, z: -0.01}
+  m_LocalScale: {x: 3, y: 3, z: 6}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000010905418206}
@@ -198,21 +198,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31fda5a4e1e29a409e8ca86362ea71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offspringPrefab: {fileID: 114000012809634782}
   colorChange: {fileID: 23000013536511254}
+  offspringPrefab: {fileID: 114000012809634782}
   DNA:
   - 
   - 
   - 
   - 
   - 
-  mutationChance: 0
-  reproductiveRange: 0
   frameShiftChance: 0
+  mutationChance: 0
   age: 0
   averageAge: 0
+  timeUntilReproduce: 0
+  isGrowing: 0
+  growthTime: 0
   scale: 0
+  maxScale: 0
+  reproductiveRange: 0
   nutrition: 0
   healthModifer: 0
-  timeUntilReproduce: 0
   differences: 0
