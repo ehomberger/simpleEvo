@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-//using System;
 using System.Collections.Generic;
-
 
 public abstract class Organic : MonoBehaviour {
 
@@ -150,7 +148,7 @@ public abstract class Organic : MonoBehaviour {
 	}
 
 
-	// Mutations 
+	/********************* Mutations *********************/ 
 	// ✓ missenseMutate
 	// ✓ frameShiftInsert
 	// ✓ frameShiftDelete / deletion
@@ -158,6 +156,7 @@ public abstract class Organic : MonoBehaviour {
 	// ✗ duplication
 	// ✗ repeatExpansion
 	// ✗ nonsenseMutate
+
 	public string missenseMutate (int j, string newDNA){
 		int newValue = Random.Range (0, 16);
 
@@ -178,20 +177,20 @@ public abstract class Organic : MonoBehaviour {
 	// shifting all other genes to the right one position and truncates the end
 	// Called during reproduce ()
 	public void frameShiftInsert (int index){
-		///	Debug.Log ("Frameshifting tree " + name);
 		string newGene = ( (int)Random.Range (0.0f, 15.0f)).ToString ("X");
 		string unmodifiedDNA = string.Join ("", DNA);
 		string modifiedDNA;
 		
-		Debug.Log ("Gene " + newGene + " is being inserted in " + unmodifiedDNA + " at " + index);
 		modifiedDNA = unmodifiedDNA.Insert (index, newGene);
-		///	Debug.Log ("New gene is " + modifiedDNA);
 
 		for (int i = 0; i < DNA.Length; i++){
 			DNA[i] = modifiedDNA.Substring (i*2, 2);
 		}
 
 		setGameObjectName (); // set the name of the object to match update DNA
+		
+		Debug.Log("Gene " + newGene + " was inserted in " + unmodifiedDNA + " at " + index
+				  + ". New gene is " + modifiedDNA + " in " gameObject.name);
 	}
 
 	// Unfinished variation of frameShiftInsert, but deletes something
@@ -219,6 +218,8 @@ public abstract class Organic : MonoBehaviour {
 		nutrition = myTerrain.GetComponent<NutrientMap> ().getValue (transform.position);
 	}
 
+	/********************* abstracts *********************/ 
+	
 	public abstract void  setNutritionFactor (float root);
 
 	public abstract void  setDeltaScale (float top);

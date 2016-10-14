@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 public class Trees : Organic {
+
 	public int differences;
 	
 	//string[] perfect;
@@ -27,6 +28,8 @@ public class Trees : Organic {
 // 		}
 	}
 
+	//
+	//
 	public override void checkDeath(){
 		float threshold;
 		//		threshold = 50 +(age - averageAge*2) + (differences * 2);

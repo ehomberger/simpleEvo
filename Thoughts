@@ -1,0 +1,9 @@
+Thoughts on...
+
+# Mutations
+  - can / should mutations be their own class or just remain within the organics
+  - should each individual mutation have a chance of occurring or should there be
+    an overall chance of mutation occurring, and then a probability of a specific
+    mutation happening? 
+        - need to find out more about how mutations actually work and how often
+          they happen
