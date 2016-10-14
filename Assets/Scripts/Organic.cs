@@ -78,24 +78,7 @@ public abstract class Organic : MonoBehaviour {
 		}
 	}
 
-	public string replace (int j, string newDNA){
-		int newValue = Random.Range (0, 16);
-
-		string newHex = newValue.ToString ("X");
-///		Debug.Log ("index is " + j + " length is " + newDNA.Length);
-		newDNA = newDNA.Remove (j, 1);
-	
-		newDNA = newDNA.Insert (j, newHex);
-///		Debug.Log ("Returning " + newDNA);
-///		Debug.Log ("old is " + this.DNA[0]);
-
-		setGameObjectName (); // set the name of the object to match update DNA
-
-		return newDNA;
-	}
-
-	public List<GameObject> getNearby (string targetTag)
-	{
+	public List<GameObject> getNearby (string targetTag){
 		Collider[] options = Physics.OverlapSphere (this.transform.position, 30);
 		List<GameObject> nearby = new List<GameObject> ();
 		
@@ -111,8 +94,7 @@ public abstract class Organic : MonoBehaviour {
 	// 
 	// 
 	// 
-	public List<GameObject> getNearby (string targetTag, int radius)
-	{
+	public List<GameObject> getNearby (string targetTag, int radius){
 		Collider[] options = Physics.OverlapSphere (this.transform.position, radius);
 		List<GameObject> nearby = new List<GameObject> ();
 		
@@ -167,18 +149,43 @@ public abstract class Organic : MonoBehaviour {
 		gameObject.name = DNA[0] + "" + DNA[1] + "" + DNA[2];
 	}
 
+
+	// Mutations 
+	// ✓ missenseMutate
+	// ✓ frameShiftInsert
+	// ✓ frameShiftDelete / deletion
+	// ✗ geneReversal
+	// ✗ duplication
+	// ✗ repeatExpansion
+	// ✗ nonsenseMutate
+	public string missenseMutate (int j, string newDNA){
+		int newValue = Random.Range (0, 16);
+
+		string newHex = newValue.ToString ("X");
+		///	Debug.Log ("index is " + j + " length is " + newDNA.Length);
+		newDNA = newDNA.Remove (j, 1);
+	
+		newDNA = newDNA.Insert (j, newHex);
+		///	Debug.Log ("Returning " + newDNA);
+		///	Debug.Log ("old is " + this.DNA[0]);
+
+		setGameObjectName (); // set the name of the object to match update DNA
+
+		return newDNA;
+	}
+
 	// Mutation for Organic's DNA. At index, inserts a random new gene from 0-F,
 	// shifting all other genes to the right one position and truncates the end
 	// Called during reproduce ()
 	public void frameShiftInsert (int index){
-///		Debug.Log ("Frameshifting tree " + name);
+		///	Debug.Log ("Frameshifting tree " + name);
 		string newGene = ( (int)Random.Range (0.0f, 15.0f)).ToString ("X");
 		string unmodifiedDNA = string.Join ("", DNA);
 		string modifiedDNA;
 		
 		Debug.Log ("Gene " + newGene + " is being inserted in " + unmodifiedDNA + " at " + index);
 		modifiedDNA = unmodifiedDNA.Insert (index, newGene);
-///		Debug.Log ("New gene is " + modifiedDNA);
+		///	Debug.Log ("New gene is " + modifiedDNA);
 
 		for (int i = 0; i < DNA.Length; i++){
 			DNA[i] = modifiedDNA.Substring (i*2, 2);
@@ -206,8 +213,9 @@ public abstract class Organic : MonoBehaviour {
 		return transform.parent.GetComponent<TreeTracker> ().isRunning;
 	}
 
+	// 
 	public void setNutrition (){
-///		Debug.Log ("Setting nutrition\n");
+		/// Debug.Log ("Setting nutrition\n");
 		nutrition = myTerrain.GetComponent<NutrientMap> ().getValue (transform.position);
 	}
 

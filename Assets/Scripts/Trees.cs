@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 public class Trees : Organic {
-	// Use this for initialization
 	public int differences;
 	
 	//string[] perfect;
@@ -88,7 +87,7 @@ public class Trees : Organic {
 		for (int i = 0; i < base.DNA.Length; i++){
 			for (int j = 0; j < base.DNA[i].Length; j++){
 				if(Random.Range (0, 100) < base.mutationChance){
-					offspringDNA[i] = base.replace(j, offspringDNA[i]);
+					offspringDNA[i] = base.missenseMutate(j, offspringDNA[i]);
 				}
 				if (Random.Range(0f, 200f) <= frameShiftChance){ //frameshift chance is .5
 					int index = (int)Random.Range(1, DNA.Length*2) - 1;
@@ -118,7 +117,7 @@ public class Trees : Organic {
 		return 10;
 	}
 
-	// Scale of trees is linear, should replace with some lnx function
+	// Scale of trees is linear, should missenseMutate with some lnx function
 	public override void setNutritionFactor(float root){
 		nutritionFactor = Mathf.Pow(nutrition, 1.0f/root);
 	}

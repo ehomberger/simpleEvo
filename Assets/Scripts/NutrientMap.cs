@@ -7,7 +7,7 @@ public class NutrientMap : MonoBehaviour {
     private float[,]  mapAsArray;
     private int       mapDimension;
 
-    // 
+    // Initialization 
     public void Start(){
         if( nutrientMap == null )
             Debug.Log("You forgot your NutrientMap");
