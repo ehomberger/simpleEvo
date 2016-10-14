@@ -44,8 +44,4 @@ public class NutrientMap : MonoBehaviour {
                 mapAsArray[i, j] = mapImage.GetPixel(i, j).grayscale;
 
     }
-
-    public bool startupComplete(){
-        return mapAsArray[0, 0] != null;
-    }
 }

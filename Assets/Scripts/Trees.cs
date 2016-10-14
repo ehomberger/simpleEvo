@@ -8,13 +8,10 @@ public class Trees : Organic {
 	//string[] perfect;
 	new void Start(){
 		base.Start ();
-		base.averageAge = 50;
-		reproductiveRange = 30;
+		base.averageAge  = 50;
 		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
-//		base.material.color = new Color32(System.Convert.ToByte(DNA[0], 16), System.Convert.ToByte(DNA[1], 16), System.Convert.ToByte(DNA[2], 16), 1);
-//		GetComponentsInChildren<SpriteRenderer>()[0].material = material;
-//		GetComponentsInChildren<Renderer>[0].material;
 		setColor();
+		setReproductiveRange(15);
 		differences = 0;
 
 // 		perfect = new string[3];
@@ -33,14 +30,14 @@ public class Trees : Organic {
 
 	public override void checkDeath(){
 		float threshold;
-//		threshold = 50 +(age - averageAge*2) + (differences * 2);
-		threshold = 75; //placeholder value, ~25% of trees will die 
+		//		threshold = 50 +(age - averageAge*2) + (differences * 2);
+		threshold = 25; //placeholder value, ~25% of trees will die 
 		int attempt;
 
 		attempt = Random.Range (0, 100);
 
 		if (attempt < threshold) {
-//		Destroy(this.gameObject);
+			//Destroy(this.gameObject);
 		}
 
 	}
@@ -48,14 +45,14 @@ public class Trees : Organic {
 	public override float reproduce(){
 		Debug.Log ("Reproducing");
 		List<GameObject> options = base.getNearby("Tree");
-		Trees offspring;
-		int random;
-		float randomX, randomZ;
+		Trees 	 offspring;
+		int 	 random;
+		float 	 randomX, randomZ;
 		string[] offspringDNA = new string[DNA.Length];
 		string[] chosen;
-		string newSection = "";
+		string 	 newSection = "";
 
-//		Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
+		//Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
 	
 		if (options.Count > 1) {
 			random = Random.Range (1, options.Count);
@@ -122,8 +119,8 @@ public class Trees : Organic {
 	}
 
 	// Scale of trees is linear, should replace with some lnx function
-	public override void setNutritionFactor(){
-		nutritionFactor = Mathf.Pow(nutrition, 1.0f/5.0f);
+	public override void setNutritionFactor(float root){
+		nutritionFactor = Mathf.Pow(nutrition, 1.0f/root);
 	}
 
 	public override void setDeltaScale(float top){
@@ -131,7 +128,7 @@ public class Trees : Organic {
 	}
 
 	public override void updateScale(){
-		setDeltaScale(0.001f);
+		setDeltaScale(0.0001f);
 		scale += deltaScale;
 		transform.localScale = new Vector3(scale, scale, scale);
 	}
@@ -139,6 +136,10 @@ public class Trees : Organic {
 	public override void setScale(){
 		scale = 0.05f;
 		transform.localScale = new Vector3(scale, scale, scale);
+	}
+
+	public override void setReproductiveRange(int multiplier){
+		reproductiveRange = (int)(multiplier * Mathf.Log(scale + 0.9f) + 5.0f);
 	}
 }
 
