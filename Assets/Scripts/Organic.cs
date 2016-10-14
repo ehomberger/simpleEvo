@@ -149,13 +149,13 @@ public abstract class Organic : MonoBehaviour {
 
 
 	/********************* Mutations *********************/ 
-	// ✓ missenseMutate
-	// ✓ frameShiftInsert
-	// ✓ frameShiftDelete / deletion
-	// ✗ geneReversal
-	// ✗ duplication
-	// ✗ repeatExpansion
-	// ✗ nonsenseMutate
+	 // ✓ missenseMutate
+	 // ✓ frameShiftInsert
+	 // ✓ frameShiftDelete / deletion
+	 // ✗ geneReversal
+	 // ✗ duplication
+	 // ✗ repeatExpansion
+	 // ✗ nonsenseMutate
 
 	public string missenseMutate (int j, string newDNA){
 		int newValue = Random.Range (0, 16);
@@ -190,7 +190,7 @@ public abstract class Organic : MonoBehaviour {
 		setGameObjectName (); // set the name of the object to match update DNA
 		
 		Debug.Log("Gene " + newGene + " was inserted in " + unmodifiedDNA + " at " + index
-				  + ". New gene is " + modifiedDNA + " in " gameObject.name);
+				  + ". New gene is " + modifiedDNA + " in " + gameObject.name);
 	}
 
 	// Unfinished variation of frameShiftInsert, but deletes something
@@ -219,7 +219,7 @@ public abstract class Organic : MonoBehaviour {
 	}
 
 	/********************* abstracts *********************/ 
-	
+
 	public abstract void  setNutritionFactor (float root);
 
 	public abstract void  setDeltaScale (float top);

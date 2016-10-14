@@ -54,8 +54,9 @@ public class Trees : Organic {
 		string[] chosen;
 		string 	 newSection = "";
 
-		//Debug.Log ("choosing mate from " + options.Count + " options " + options[0].name);
+		Debug.Log ("choosing mate from " + options.Count + " options ");
 	
+		// Create new DNA string for offspring, mutations happen here
 		if (options.Count > 1) {
 			random = Random.Range (1, options.Count);
 			chosen = options[random].GetComponent<Trees>().getDNA();
@@ -81,17 +82,18 @@ public class Trees : Organic {
 			offspringDNA = DNA;
 		}
 
-
+		// Create new tree gameObject and place it on terrain without colliding
+		// with other trees
 		offspring = Instantiate (base.offspringPrefab) as Trees;
 		offspring.transform.parent = gameObject.transform.parent;
 		offspring.setDNA(offspringDNA);
-		Debug.Log ("Setting DNA to " + offspringDNA [0] + " " + offspringDNA [1] + " " + offspringDNA [2]);
+		//Debug.Log ("Setting DNA to " + offspringDNA [0] + " " + offspringDNA [1] + " " + offspringDNA [2]);
 
 		for (int i = 0; i < base.DNA.Length; i++){
 			for (int j = 0; j < base.DNA[i].Length; j++){
-				if(Random.Range (0, 100) < base.mutationChance){
+				if(Random.Range (0, 100) < base.mutationChance)
 					offspringDNA[i] = base.missenseMutate(j, offspringDNA[i]);
-				}
+
 				if (Random.Range(0f, 200f) <= frameShiftChance){ //frameshift chance is .5
 					int index = (int)Random.Range(1, DNA.Length*2) - 1;
 					offspring.frameShiftInsert(index);
@@ -102,9 +104,9 @@ public class Trees : Organic {
 		randomX = Random.Range (-reproductiveRange, reproductiveRange);
 		randomZ = Random.Range (-reproductiveRange, reproductiveRange);
 
-
-		// Ensure the tree doesn't spawn inside of another's collder
-		Vector3 boxDimensions = new Vector3(5, 2, 5);
+		// Ensure the tree doesn't spawn inside of another's collder, allow 5 attempts
+		// at finding a spot without another tree already there, destroy if it does
+		Vector3 boxDimensions = new Vector3(5, 2, 5); //! warning magic numbers
 		Vector3 spawnPosition = new Vector3(randomX, Terrain.activeTerrain.SampleHeight(new Vector3(randomX, 0, randomZ)), randomZ);
 		int attempts = 0;
 		while( Physics.OverlapBox(spawnPosition, boxDimensions).Length > 1 && attempts < 5)
@@ -115,7 +117,9 @@ public class Trees : Organic {
 			spawnPosition.z = randomZ;
 			attempts++;
 		}
-		offspring.transform.position = new Vector3(this.transform.position.x + randomX, this.transform.position.y, this.transform.position.z + randomZ);
+		if (attempts == 5) Destroy(offspring);
+		else offspring.transform.position = new Vector3(this.transform.position.x + randomX, this.transform.position.y, this.transform.position.z + randomZ);
+
 		
 		return 10;
 	}
