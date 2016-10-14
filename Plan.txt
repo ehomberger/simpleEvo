@@ -1,4 +1,49 @@
-Size
-Nutrients
-Reproduction
-Health
+======================######## Fully Implemented ########=======================
+- Color changing object
+- Importing and initializing nutrient maps
+- Throwing a 90kg stone 300m
+
+======================###### Partially Implemented ######=======================
+- Size
+  - Trees change size at varying rates depending on their available nutrients
+
+- Nutrients
+  - Nutrient maps are in place for reading and writing, but as of now organics
+    only access what value is at their x,z position and don't modify it at all
+  - NutritionFactor is a variable used to describe what kind of benefit the Tree 
+    gets from the amount of nutrient it has available, and it seems to be in a 
+    good place, but could use some tweeking in reality, not a huge deal
+
+- Reproduction
+  - Mutation, gene sharing, and range of Reproduction are in place, all kind of 
+    half-assed though
+  - Thoughts on this: 
+        - Does the gene selection from parents need to happen in Trees class? If
+          gene selection techniques are uniform across most life forms (assuming
+          sexual reproduction here) can't this method be in Organics instead?
+
+- Mutations
+  - Mutations are a bit of fun right now, 3 variations are set up, but i found
+    out that there are 4 other typical types of mutation, so will probably throw
+    those in.
+  - Would it be a good idea to make mutations a class inside of organics?
+    -might have 0 benefit
+  - Mutation function parameters are hella inconsistent, needs to make up my
+    goddamn mind on this one
+
+
+======================######## Notly Implemented ########=======================
+- Health
+  - Nothing really dies unless it gets placed off the map, so that's gotta 
+    change pretty soon here
+
+- Nutritional needs of tree based on volumetric size
+
+- 
+
+- Other types of plants*
+
+
+*this is much later
+
+! add some type of ranking system to make this a list of things to do

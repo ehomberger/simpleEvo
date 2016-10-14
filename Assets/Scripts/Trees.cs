@@ -92,7 +92,7 @@ public class Trees : Organic {
 		for (int i = 0; i < base.DNA.Length; i++){
 			for (int j = 0; j < base.DNA[i].Length; j++){
 				if(Random.Range (0, 100) < base.mutationChance)
-					offspringDNA[i] = base.missenseMutate(j, offspringDNA[i]);
+					base.missenseMutate(i, j);
 
 				if (Random.Range(0f, 200f) <= frameShiftChance){ //frameshift chance is .5
 					int index = (int)Random.Range(1, DNA.Length*2) - 1;

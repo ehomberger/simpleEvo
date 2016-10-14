@@ -23,13 +23,13 @@ public abstract class Organic : MonoBehaviour {
 	// Physical Size variables
 	public float scale;
 	public float deltaScale;
-	public float nutritionFactor;
 	public int   reproductiveRange;
 
 	// Nurition variables
 	public float nutrition;
+	public float nutritionFactor;
 	public float healthModifer;
-
+	public float nutritionalNeeds;
 	
 	// Initialization
 	public void Start () 
@@ -97,19 +97,15 @@ public abstract class Organic : MonoBehaviour {
 		List<GameObject> nearby = new List<GameObject> ();
 		
 		for (int i = 0; i < options.Length; i++) {
-			if (options[i].gameObject.tag == targetTag){
+			if (options[i].gameObject.tag == targetTag)
 				nearby.Add (options[i].gameObject);
-			}
 		}
 
 		return nearby;
 	}
 
 	public void setDNA (string[] newDNA){
-
-		for (int i = 0; i < DNA.Length; i++){
-			DNA[i] = newDNA[i];
-		}
+		for (int i = 0; i < DNA.Length; i++) DNA[i] = newDNA[i];
 	}
 
 	public string[] getDNA (){
@@ -125,7 +121,6 @@ public abstract class Organic : MonoBehaviour {
 
 	public void checkStartDNA (){
 		if ( DNA[0].Length == 0 ){
-
 			for ( int i = 0; i < DNA.Length; i++ ){
 				int hexValue = (int)Random.Range (15.0f, 255.0f);
 				DNA[i] = hexValue.ToString ("X");
@@ -151,33 +146,31 @@ public abstract class Organic : MonoBehaviour {
 	/********************* Mutations *********************/ 
 	 // ✓ missenseMutate
 	 // ✓ frameShiftInsert
-	 // ✓ frameShiftDelete / deletion
+	 // ✗ frameShiftDelete / deletion
 	 // ✗ geneReversal
 	 // ✗ duplication
 	 // ✗ repeatExpansion
 	 // ✗ nonsenseMutate
 
-	public string missenseMutate (int j, string newDNA){
-		int newValue = Random.Range (0, 16);
+	// In given DNA string, at position j, pick new hex value at random, replace
+	// the gene at j with this new shiny ranom value. Returns that new string
+	public void missenseMutate (int gene, int index){
+		int    newValue = Random.Range (0, 16);
+		string newHex   = newValue.ToString ("X");
+		string original = DNA[gene];
 
-		string newHex = newValue.ToString ("X");
-		///	Debug.Log ("index is " + j + " length is " + newDNA.Length);
-		newDNA = newDNA.Remove (j, 1);
-	
-		newDNA = newDNA.Insert (j, newHex);
-		///	Debug.Log ("Returning " + newDNA);
-		///	Debug.Log ("old is " + this.DNA[0]);
-
-		setGameObjectName (); // set the name of the object to match update DNA
-
-		return newDNA;
+		DNA[gene] = DNA[gene].Remove (index, 1);
+		DNA[gene] = DNA[gene].Insert (index, newHex);
+		setGameObjectName ();
+		
+		Debug.Log("Missense Mutation occurred, " + original + " is now " + DNA);
 	}
 
 	// Mutation for Organic's DNA. At index, inserts a random new gene from 0-F,
 	// shifting all other genes to the right one position and truncates the end
 	// Called during reproduce ()
 	public void frameShiftInsert (int index){
-		string newGene = ( (int)Random.Range (0.0f, 15.0f)).ToString ("X");
+		string newGene = ((int)Random.Range (0.0f, 15.0f)).ToString ("X");
 		string unmodifiedDNA = string.Join ("", DNA);
 		string modifiedDNA;
 		
@@ -189,8 +182,8 @@ public abstract class Organic : MonoBehaviour {
 
 		setGameObjectName (); // set the name of the object to match update DNA
 		
-		Debug.Log("Gene " + newGene + " was inserted in " + unmodifiedDNA + " at " + index
-				  + ". New gene is " + modifiedDNA + " in " + gameObject.name);
+		Debug.Log("Insertion Frameshift occurred, " + newGene + " was inserted at "
+				  + index);
 	}
 
 	// Unfinished variation of frameShiftInsert, but deletes something
