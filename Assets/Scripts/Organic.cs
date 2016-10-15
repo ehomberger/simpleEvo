@@ -8,11 +8,11 @@ public abstract class Organic : MonoBehaviour {
 	private Terrain  myTerrain;
 	
 	// Genetics variables
-	public Organic 	  offspringPrefab;
-	public string[]   DNA = new string[numGenes];
-	public static int numGenes;
-	public int 		  frameShiftChance; //remove this as soon as possible, it's dumb
-	public int 		  mutationChance;
+	public int 	   numGenes;
+	public Organic offspringPrefab;
+	public DNA 	   DNA;
+	public int 	   frameShiftChance; //remove this as soon as possible, it's dumb
+	public int 	   mutationChance;
 
 	// Age variables
 	private int   nextAge;
@@ -36,10 +36,11 @@ public abstract class Organic : MonoBehaviour {
 	{
 		myTerrain = Terrain.activeTerrain;
 		if ( !isOnTerrain () ){
-			Destroy (gameObject);
+			Destroy(this.gameObject);
 		}
 		
-		checkStartDNA (); 	 	 // Ensures that the Organic has DNA
+		numGenes = 5;
+		DNA = new DNA(numGenes);
 		setYTransform (); 	 	 // Place the organic on the map so it's pretty
 		setGameObjectName (); 	 // Rename the organic so it's easy to identify
 		setNutrition ();  		 // Get the organic's initial nutrition
@@ -48,7 +49,8 @@ public abstract class Organic : MonoBehaviour {
 		timeUntilReproduce = 20;
 
 		age = 0;
-		mutationChance = 2;
+		DNA.missenseChance = 2;
+		DNA.shiftInsertChance = 1;
 		nextAge = 1;
 	}
 	
@@ -67,11 +69,11 @@ public abstract class Organic : MonoBehaviour {
 				setReproductiveRange (15);
 			}
 			
-			updateScale ();
+			updateScale();
 			
 			if (timeUntilReproduce <= 0) 
 			{
-				timeUntilReproduce = reproduce () + Random.Range (0, 6) - 3;
+				timeUntilReproduce = reproduce() + Random.Range (0, 6) - 3;
 			}
 		}
 	}
@@ -104,14 +106,6 @@ public abstract class Organic : MonoBehaviour {
 		return nearby;
 	}
 
-	public void setDNA (string[] newDNA){
-		for (int i = 0; i < DNA.Length; i++) DNA[i] = newDNA[i];
-	}
-
-	public string[] getDNA (){
-		return DNA;
-	}
-
 	public void setYTransform (){
 		Vector3 currentPosition = transform.position;
 		float 	targetHeight  	= myTerrain.SampleHeight (currentPosition);
@@ -119,85 +113,27 @@ public abstract class Organic : MonoBehaviour {
 		transform.position 		= targetPosition;
 	}
 
-	public void checkStartDNA (){
-		if ( DNA[0].Length == 0 ){
-			for ( int i = 0; i < DNA.Length; i++ ){
-				int hexValue = (int)Random.Range (15.0f, 255.0f);
-				DNA[i] = hexValue.ToString ("X");
-			}
-		}
-	}	
-
 	// Sets the Organic's material color on its color change model
 	// Called once at start ()
 	public void setColor (){
-		colorChange.material.color = new Color32 (System.Convert.ToByte (DNA[0], 16), 
-									 System.Convert.ToByte (DNA[1], 16), 
-									 System.Convert.ToByte (DNA[2], 16), 1);
+		colorChange.material.color = new Color32 (
+			System.Convert.ToByte (DNA.chromos[0], 16), 
+			System.Convert.ToByte (DNA.chromos[1], 16), 
+			System.Convert.ToByte (DNA.chromos[2], 16), 1);
 	}
 
 	// Sets the Organic's name to its first 3 gene pairs
 	// Called once at start ()
 	public void setGameObjectName (){
-		gameObject.name = DNA[0] + "" + DNA[1] + "" + DNA[2];
-	}
-
-
-	/********************* Mutations *********************/ 
-	 // ✓ missenseMutate
-	 // ✓ frameShiftInsert
-	 // ✗ frameShiftDelete / deletion
-	 // ✗ geneReversal
-	 // ✗ duplication
-	 // ✗ repeatExpansion
-	 // ✗ nonsenseMutate
-
-	// In given DNA string, at position j, pick new hex value at random, replace
-	// the gene at j with this new shiny ranom value. Returns that new string
-	public void missenseMutate (int gene, int index){
-		int    newValue = Random.Range (0, 16);
-		string newHex   = newValue.ToString ("X");
-		string original = DNA[gene];
-
-		DNA[gene] = DNA[gene].Remove (index, 1);
-		DNA[gene] = DNA[gene].Insert (index, newHex);
-		setGameObjectName ();
-		
-		Debug.Log("Missense Mutation occurred, " + original + " is now " + DNA);
-	}
-
-	// Mutation for Organic's DNA. At index, inserts a random new gene from 0-F,
-	// shifting all other genes to the right one position and truncates the end
-	// Called during reproduce ()
-	public void frameShiftInsert (int index){
-		string newGene = ((int)Random.Range (0.0f, 15.0f)).ToString ("X");
-		string unmodifiedDNA = string.Join ("", DNA);
-		string modifiedDNA;
-		
-		modifiedDNA = unmodifiedDNA.Insert (index, newGene);
-
-		for (int i = 0; i < DNA.Length; i++){
-			DNA[i] = modifiedDNA.Substring (i*2, 2);
-		}
-
-		setGameObjectName (); // set the name of the object to match update DNA
-		
-		Debug.Log("Insertion Frameshift occurred, " + newGene + " was inserted at "
-				  + index);
-	}
-
-	// Unfinished variation of frameShiftInsert, but deletes something
-	// Not entirely sure where I was going with this
-	public void frameShiftDelete (int index){
-		//int newGene = (int)Random.Range (0.0f, 15.0f);
-		//string currentDNA = DNA.ToString ();
+		Debug.Log("set name to " + DNA.name);
+		gameObject.name = DNA.name;
 	}
 
 	// Is the Organic inisde the terrain? Return true if it is, false otherwise
 	public bool isOnTerrain (){
 		// get the active terrain's box collider, check if the organic object
 		// exists within the bounds of the terrain
-		return Terrain.activeTerrain.GetComponent<BoxCollider> ().bounds.Contains (transform.position);
+		return Terrain.activeTerrain.GetComponent<BoxCollider>().bounds.Contains(transform.position);
 	}
 
 	// This could be incredibly inefficient

@@ -14,4 +14,10 @@ public class TreeTracker : MonoBehaviour{
         GUI.Box( new Rect(10, 10, 100, 50), "Trees in Scene");
         GUI.Label( new Rect( 55, 35, 50, 50), "" + transform.childCount );
     }
+
+    void Update(){
+        if(Input.GetKey(KeyCode.LeftControl)) 
+            if(Input.GetKeyDown(KeyCode.T))
+                isRunning = !isRunning;
+    }
 }

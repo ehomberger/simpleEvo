@@ -12,7 +12,7 @@ public class NutrientMap : MonoBehaviour {
         if( nutrientMap == null )
             Debug.Log("You forgot your NutrientMap");
 
-        mapDimension = nutrientMap.width;
+        mapDimension = 513;
         mapAsArray   = new float[mapDimension, mapDimension];
         convertImageTo2DArray(nutrientMap);
         Debug.Log("mapAsArray dimensions are " + mapAsArray.GetLength(0) + "x" + mapAsArray.GetLength(1) );

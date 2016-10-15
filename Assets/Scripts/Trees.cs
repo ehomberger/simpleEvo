@@ -47,34 +47,34 @@ public class Trees : Organic {
 	public override float reproduce(){
 		Debug.Log ("Reproducing");
 		List<GameObject> options = base.getNearby("Tree");
-		Trees 	 offspring;
-		int 	 random;
-		float 	 randomX, randomZ;
-		string[] offspringDNA = new string[DNA.Length];
-		string[] chosen;
-		string 	 newSection = "";
+		Trees  offspring;
+		int    random;
+		float  randomX, randomZ;
+		DNA    offspringDNA = new DNA(numGenes);
+		DNA    chosen = new DNA(numGenes);;
+		string newSection = "";
 
 		Debug.Log ("choosing mate from " + options.Count + " options ");
 	
 		// Create new DNA string for offspring, mutations happen here
 		if (options.Count > 1) {
 			random = Random.Range (1, options.Count);
-			chosen = options[random].GetComponent<Trees>().getDNA();
+			chosen.chromos = options[random].GetComponent<Trees>().DNA.getDNA();
 
 			// For each gene, pick one from either parent
-			for (int i = 0; i < base.DNA.Length; i++) {
+			for (int i = 0; i < DNA.Length - 1; i++) {
 				// pick each gene from one parent
 				// this should be faster than the commented code
 				int geneA = (int)Random.Range(1,2);
 				int geneB = (int)Random.Range(1,2);
 
-				if( geneA == 1 ) newSection += DNA[i][0];
-				else			 newSection += chosen[i][0];
+				if( geneA == 1 ) newSection += DNA.chromos[i][0];
+				else			 newSection += chosen.chromos[i][0];
 
-				if( geneB == 1 ) newSection += DNA[i][1];
-				else			 newSection += chosen[i][1]; 
+				if( geneB == 1 ) newSection += DNA.chromos[i][1];
+				else			 newSection += chosen.chromos[i][1]; 
 
-				offspringDNA[i] = newSection;
+				offspringDNA.chromos[i] = newSection;
 				newSection = "";
 			}
 		}
@@ -86,20 +86,11 @@ public class Trees : Organic {
 		// with other trees
 		offspring = Instantiate (base.offspringPrefab) as Trees;
 		offspring.transform.parent = gameObject.transform.parent;
-		offspring.setDNA(offspringDNA);
+		offspring.DNA = offspringDNA;
 		//Debug.Log ("Setting DNA to " + offspringDNA [0] + " " + offspringDNA [1] + " " + offspringDNA [2]);
 
-		for (int i = 0; i < base.DNA.Length; i++){
-			for (int j = 0; j < base.DNA[i].Length; j++){
-				if(Random.Range (0, 100) < base.mutationChance)
-					base.missenseMutate(i, j);
-
-				if (Random.Range(0f, 200f) <= frameShiftChance){ //frameshift chance is .5
-					int index = (int)Random.Range(1, DNA.Length*2) - 1;
-					offspring.frameShiftInsert(index);
-				}
-			}
-		}
+		DNA.missenseMutate();
+		DNA.frameShiftInsert();
 
 		randomX = Random.Range (-reproductiveRange, reproductiveRange);
 		randomZ = Random.Range (-reproductiveRange, reproductiveRange);

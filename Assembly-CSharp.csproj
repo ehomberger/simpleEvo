@@ -50,6 +50,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Billboard.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Scripts\DNA.cs" />
      <Compile Include="Assets\Scripts\NutrientMap.cs" />
      <Compile Include="Assets\Scripts\NutrientMap_modifier.cs" />
      <Compile Include="Assets\Scripts\Organic.cs" />
