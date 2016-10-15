@@ -4,10 +4,10 @@ using System.Collections.Generic;
 public class DNA {
 
     public static int numGenes;
-	public int Length = numGenes;
 	public static int Width = 2;
+	public int Length = numGenes;
     public string[] chromos;
-	public string name;
+	public string   name;
 
     public int missenseChance;
     public int shiftInsertChance;
@@ -19,18 +19,32 @@ public class DNA {
 
     public DNA(int j) {
         numGenes = j;
-		chromos = new string[j];
+		chromos  = new string[j];
 		checkChromos();
     }
 
+	public DNA fertilize(DNA parentB){
+		DNA parentA   = this;
+		DNA offspring = new DNA(numGenes);
+		string newSection = "";
 
-	public void setDNA (string[] newChromos){
-		for (int i = 0; i < numGenes; i++) 
-			chromos[i] = newChromos[i];
-	}
+		for(int i = 0; i < numGenes-1; i++){
+			// pick each gene from one parent
+			// this should be faster than the commented code
+			int geneA = (int)Random.Range(1,2);
+			int geneB = (int)Random.Range(1,2);
 
-	public string[] getDNA (){
-		return chromos;
+			if( geneA == 1 ) newSection += parentA.chromos[i][0];
+			else			 newSection += parentB.chromos[i][0];
+
+			if( geneB == 1 ) newSection += parentA.chromos[i][1];
+			else			 newSection += parentB.chromos[i][1]; 
+
+			offspring.chromos[i] = newSection;
+			newSection = "";	
+		}
+
+		return offspring;
 	}
 	
 	public void checkChromos (){
@@ -122,6 +136,16 @@ public class DNA {
 		//string currentDNA = DNA.ToString ();
 	}
 
+
+	/************************ Misc ***********************/ 
+	public void setDNA (string[] newChromos){
+		for (int i = 0; i < numGenes; i++) 
+			chromos[i] = newChromos[i];
+	}
+
+	public string[] getDNA (){
+		return chromos;
+	}
 
 	public void setName(string newName){
 		name = newName;
