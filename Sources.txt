@@ -1,0 +1,5 @@
+Genetic Mutation Types referenced at
+ - https://ghr.nlm.nih.gov/primer/mutationsanddisorders/possiblemutations
+
+Rates of Genetic muations
+ - https://en.wikipedia.org/wiki/Mutation_rate

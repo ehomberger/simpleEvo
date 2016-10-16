@@ -1,7 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{53409495-6E70-2A89-CFBE-952D11B71578}") = "Evo", "Assembly-CSharp.csproj", "{640FE965-36FE-261E-694A-34E7A5E6BAE1}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012Project("{53409495-6E70-2A89-CFBE-952D11B71578}") = "Evo", "Assembly-CSharp.csproj", "{640FE965-36FE-261E-694A-34E7A5E6BAE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,9 +11,6 @@ Global
 		{640FE965-36FE-261E-694A-34E7A5E6BAE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{640FE965-36FE-261E-694A-34E7A5E6BAE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{640FE965-36FE-261E-694A-34E7A5E6BAE1}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 																																		GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
@@ -36,5 +31,4 @@ Global
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
 	EndGlobalSection
-
 EndGlobal
