@@ -51,3 +51,18 @@
 *this is much later
 
 ! add some type of ranking system to make this a list of things to do
+
+======================######## Eric's todo list ########=======================
+
+1st. Add death
+	a. threshold that needs to be met
+	b. make growth also be based on nutrients above threshold
+	c. make threshold size dependent
+2nd. General clean up
+	a. Carson is right, gene selection should happen in organics
+	b. General commenting/changing to defined values where applicable
+3rd. Make more things dna dependent
+	a. main one is reproduction 'type'
+		-Trees will have a gene pair for reproduction. they can only reproduce if both trees have same value
+		-should allow different 'species' to show up
+	b. growth factor should be based on dna
