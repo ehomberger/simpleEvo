@@ -57,7 +57,7 @@
 (done)0th. Fix gitIgnore
 
 1st. Add death
-	a. threshold that needs to be met
+	(done)a. threshold that needs to be met
 	b. make growth also be based on nutrients above threshold
 	c. make threshold size dependent
 2nd. General clean up

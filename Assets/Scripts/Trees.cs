@@ -9,6 +9,8 @@ public class Trees : Organic {
 	new void Start(){
 		base.Start ();
 		base.averageAge  = 50;
+        base.threshold = 1;
+        base.health = 100;
 		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
 		setColor();
 		setReproductiveRange(15);
@@ -31,15 +33,10 @@ public class Trees : Organic {
 	//
 	//
 	public override void checkDeath(){
-		float threshold;
-		//		threshold = 50 +(age - averageAge*2) + (differences * 2);
-		threshold = 25; //placeholder value, ~25% of trees will die 
-		int attempt;
 
-		attempt = Random.Range (0, 100);
-
-		if (attempt < threshold) {
-			//Destroy(this.gameObject);
+		if (health <= 0) {
+			Destroy(this.gameObject);
+            Debug.Log("dying");
 		}
 
 	}
