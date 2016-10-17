@@ -24,6 +24,7 @@ public abstract class Organic : MonoBehaviour {
 	public float scale;
 	public float deltaScale;
 	public int   reproductiveRange;
+    public float nutritionLimiter;
 
 	// Nurition variables
 	public float nutrition;
@@ -32,8 +33,7 @@ public abstract class Organic : MonoBehaviour {
 	public float nutritionalNeeds;
 
     // Health variables
-    public float threshold;
-    public float health;
+    public float     health;
     public const int deathFactor = 5;
 	
 	// Initialization
@@ -151,10 +151,14 @@ public abstract class Organic : MonoBehaviour {
 		/// Debug.Log ("Setting nutrition\n");
 		nutrition = myTerrain.GetComponent<NutrientMap> ().getValue (transform.position);
 
-        Debug.Log("nutrition " + nutrition + " vs threshold " + threshold);
+        
 
-        if (nutrition < threshold){
-            health -= (threshold - nutrition) * deathFactor;
+        if (nutrition < nutritionalNeeds){
+            nutritionLimiter = (nutritionalNeeds - nutrition) / nutritionalNeeds;
+            health -= (nutritionalNeeds - nutrition) * deathFactor;
+        }
+        else{
+            nutritionLimiter = 1;
         }
 	}
 

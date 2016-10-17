@@ -49,6 +49,8 @@
 
 
 *this is much later
+  - I think we can have dna that determines who a tree can mate with.
+    Should allow different 'types' of plants to diverge -Eric
 
 ! add some type of ranking system to make this a list of things to do
 
@@ -58,7 +60,7 @@
 
 1st. Add death
 	(done)a. threshold that needs to be met
-	b. make growth also be based on nutrients above threshold
+	(done)b. make growth also be based on nutrients above threshold
 	c. make threshold size dependent
 2nd. General clean up
 	a. Carson is right, gene selection should happen in organics

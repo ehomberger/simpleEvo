@@ -4,14 +4,16 @@ using System.Collections.Generic;
 public class Trees : Organic {
 
 	public int differences;
+
 	
 	//string[] perfect;
 	new void Start(){
 		base.Start ();
 		base.averageAge  = 50;
-        base.threshold = 1;
+        base.nutritionalNeeds = 1;
         base.health = 100;
-		frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
+        base.deltaScale = 1;
+        frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
 		setColor();
 		setReproductiveRange(15);
 		differences = 0;
@@ -104,7 +106,8 @@ public class Trees : Organic {
 	}
 
 	public override void updateScale(){
-		setDeltaScale(0.0005f);
+        Debug.Log("setting delta scale with " + base.nutritionLimiter);
+		setDeltaScale(base.nutritionLimiter * 0.0005f);
 		scale += deltaScale;
 		transform.localScale = new Vector3(scale, scale, scale);
 	}
