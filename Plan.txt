@@ -54,7 +54,7 @@
 
 ======================######## Eric's todo list ########=======================
 
-0th. Fix gitIgnore
+(done)0th. Fix gitIgnore
 
 1st. Add death
 	a. threshold that needs to be met
