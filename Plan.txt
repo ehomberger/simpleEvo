@@ -22,14 +22,14 @@
 - Nutrients
   - Nutrient maps are in place for reading and writing, but as of now organics
     only access what value is at their x,z position and don't modify it at all
-  - NutritionFactor is a variable used to describe what kind of benefit the Tree 
-    gets from the amount of nutrient it has available, and it seems to be in a 
+  - NutritionFactor is a variable used to describe what kind of benefit the Tree
+    gets from the amount of nutrient it has available, and it seems to be in a
     good place, but could use some tweeking in reality, not a huge deal
 
 - Reproduction
-  - Mutation, gene sharing, and range of Reproduction are in place, all kind of 
+  - Mutation, gene sharing, and range of Reproduction are in place, all kind of
     half-assed though
-  - Thoughts on this: 
+  - Thoughts on this:
         - Does the gene selection from parents need to happen in Trees class? If
           gene selection techniques are uniform across most life forms (assuming
           sexual reproduction here) can't this method be in Organics instead?
@@ -38,12 +38,12 @@
 
 ======================######## Notly Implemented ########=======================
 - Health
-  - Nothing really dies unless it gets placed off the map, so that's gotta 
+  - Nothing really dies unless it gets placed off the map, so that's gotta
     change pretty soon here
 
 - Nutritional needs of tree based on volumetric size
 
-- 
+-
 
 - Other types of plants*
 
@@ -53,6 +53,8 @@
 ! add some type of ranking system to make this a list of things to do
 
 ======================######## Eric's todo list ########=======================
+
+0th. Fix gitIgnore
 
 1st. Add death
 	a. threshold that needs to be met
