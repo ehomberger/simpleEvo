@@ -54,14 +54,20 @@
 
 ! add some type of ranking system to make this a list of things to do
 
-======================######## Eric's todo list ########=======================
+======================######## Bugs ########====================================
+
+-Null pointer in tree viewer?
+
+-Clones don't die. Seem to be born with negative health
+
+======================######## Eric's todo list ########========================
 
 (done)0th. Fix gitIgnore
 
-1st. Add death
+(done)1st. Add death
 	(done)a. threshold that needs to be met
 	(done)b. make growth also be based on nutrients above threshold
-	c. make threshold size dependent
+	(done)c. make threshold size dependent
 2nd. General clean up
 	a. Carson is right, gene selection should happen in organics
 	b. General commenting/changing to defined values where applicable

@@ -5,7 +5,7 @@ public class Trees : Organic {
 
 	public int differences;
 
-	
+
 	//string[] perfect;
 	new void Start(){
 		base.Start ();
@@ -53,7 +53,7 @@ public class Trees : Organic {
 		DNA   chosen = new DNA(numGenes);;
 
 		Debug.Log ("choosing mate from " + options.Count + " options ");
-	
+
 		// Create new DNA string for offspring, mutations happen here
 		if (options.Count > 1) {
 			random = Random.Range(1, options.Count);
@@ -66,7 +66,7 @@ public class Trees : Organic {
 
 		offspringDNA.missenseMutate();
 		offspringDNA.frameShiftInsert();
-		
+
 		// Create new tree gameObject and place it on terrain without colliding
 		// with other trees
 		offspring = Instantiate(base.offspringPrefab) as Trees;
@@ -92,7 +92,7 @@ public class Trees : Organic {
 		if (attempts == 5) Destroy(offspring);
 		else offspring.transform.position = new Vector3(this.transform.position.x + randomX, this.transform.position.y, this.transform.position.z + randomZ);
 
-		
+
 		return 10;
 	}
 
@@ -106,9 +106,9 @@ public class Trees : Organic {
 	}
 
 	public override void updateScale(){
-        Debug.Log("setting delta scale with " + base.nutritionLimiter);
 		setDeltaScale(base.nutritionLimiter * 0.0005f);
 		scale += deltaScale;
+		base.nutritionalNeeds += deltaScale/10;
 		transform.localScale = new Vector3(scale, scale, scale);
 	}
 
@@ -124,7 +124,7 @@ public class Trees : Organic {
 
 
 /* Gene guide
- * 
+ *
  *
  *
  *
@@ -141,5 +141,5 @@ tree's nutritionFactor is fifth root of nutrition
 nutritionFactor is a coefficient for the growthRate
 growthRate is delta scale based on size of the tree
 delta scale is 1/growthRate
-change in size over time is 
+change in size over time is
  */
