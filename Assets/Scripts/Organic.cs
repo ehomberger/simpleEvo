@@ -21,6 +21,7 @@ public abstract class Organic : MonoBehaviour {
 	public  float timeUntilReproduce;
 
 	// Physical Size variables
+	public float volume;
 	public float scale;
 	public float deltaScale;
 	public int   reproductiveRange;
@@ -30,6 +31,7 @@ public abstract class Organic : MonoBehaviour {
 	public float nutritionFactor;
 	public float healthModifer;
 	public float nutritionalNeeds;
+	public float nutrientDrawRange;
 	
 	// Initialization
 	public void Start () 
@@ -64,9 +66,10 @@ public abstract class Organic : MonoBehaviour {
 			
 			if (age > nextAge) {
 				setNutrition ();
-				checkDeath ();
+				checkDeath();
 				nextAge++;
-				setReproductiveRange (15);
+				setReproductiveRange(15);
+				setVolume(); //expensive i think
 			}
 			
 			updateScale();
@@ -138,18 +141,19 @@ public abstract class Organic : MonoBehaviour {
 
 	// This could be incredibly inefficient
 	public bool isSimRunning (){
-		return transform.parent.GetComponent<TreeTracker> ().isRunning;
+		return transform.parent.GetComponent<TreeTracker>().isRunning;
 	}
 
 	// 
 	public void setNutrition (){
-		/// Debug.Log ("Setting nutrition\n");
-		nutrition = myTerrain.GetComponent<NutrientMap> ().getValue (transform.position);
+		nutrition = myTerrain.GetComponent<NutrientMap>().getValue (transform.position);
 	}
 
 	/********************* abstracts *********************/ 
 
 	public abstract void  setNutritionFactor (float root);
+
+	public abstract void setNutritionalNeeds();
 
 	public abstract void  setDeltaScale (float top);
 
@@ -159,8 +163,11 @@ public abstract class Organic : MonoBehaviour {
 
 	public abstract float reproduce ();
 
+	public abstract void  setVolume();
+
 	public abstract void  setReproductiveRange (int multiplier);
 
 	public abstract void  checkDeath ();
+
 
 }
