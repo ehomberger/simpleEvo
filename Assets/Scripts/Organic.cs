@@ -49,6 +49,7 @@ public abstract class Organic : MonoBehaviour {
 		setNutritionFactor (5);	 // set the initial scale
 		setScale ();
 		timeUntilReproduce = 20;
+		Terrain.activeTerrain.gameObject.GetComponent<NutrientMap>().updateMapAlphas();
 
 		age = 0;
 		DNA.missenseChance = 2;
@@ -57,7 +58,7 @@ public abstract class Organic : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	void Update() 
 	{
 		if ( isSimRunning () )
 		{
@@ -70,6 +71,7 @@ public abstract class Organic : MonoBehaviour {
 				nextAge++;
 				setReproductiveRange(15);
 				setVolume(); //expensive i think
+				setNutrition();
 			}
 			
 			updateScale();
@@ -147,6 +149,7 @@ public abstract class Organic : MonoBehaviour {
 	// 
 	public void setNutrition (){
 		nutrition = myTerrain.GetComponent<NutrientMap>().getValue (transform.position);
+		myTerrain.GetComponent<NutrientMap>().setValue (transform.position, nutrition - 0.001f);
 	}
 
 	/********************* abstracts *********************/ 
