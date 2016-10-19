@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ea928d39a0c1245aeba4036fc783b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nutrientMap: {fileID: 2800000, guid: 88fbc00a689152446a125689d80fc30c, type: 3}
+  nutrientMapTex: {fileID: 2800000, guid: 24291bb982183d24ba03b47d1dad3332, type: 3}
 --- !u!23 &1084639429 stripped
 MeshRenderer:
   m_PrefabParentObject: {fileID: 23000013536511254, guid: 4777dbea4aa8f8c48a64a66bcd3bd605,
@@ -735,7 +735,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 74
+      value: 51.2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.z
