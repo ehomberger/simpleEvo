@@ -10,7 +10,7 @@ public class NutrientMap : MonoBehaviour {
     private float[,]  nutrientMapArray; // Name other arrays and textures like this
     private int       mapDimension;
     private Terrain   t;
-    private int     nextUpdate;
+    private int       nextUpdate;
     private float     timer;
 
     // Initialization 
@@ -53,36 +53,33 @@ public class NutrientMap : MonoBehaviour {
     // Set the pixel in the nutrientMapArray, updating the value of the nutrient map
     // Erase this when you change it, because it's bad and just for testing
     public void setValue(Vector3 position, float updateValue){
-        int x = (int)position.x;
-        int z = (int)position.z;
-        nutrientMapArray[x, z] = updateValue;
+        int xCenter = (int)position.x;
+        int zCenter = (int)position.z;
+        nutrientMapArray[xCenter, zCenter] = updateValue;
 
-        if( nutrientMapArray[x, z] < 0) {
+        if( nutrientMapArray[xCenter, zCenter] < 0) {
             updateValue = 0;
-            nutrientMapArray[x, z] = 0;
+            nutrientMapArray[xCenter, zCenter] = 0;
         }
 
-        int length = 15;
+        int radius = 10;
+        for(int x = xCenter - radius; x <= xCenter; x++){
+            for(int z = zCenter - radius; z <= zCenter; z++){
+                int dist = (x-xCenter)*(x-xCenter) + (z-zCenter)*(z-zCenter); 
+                if( dist <= radius*radius )
+                {
+                    int xSym = xCenter - (x - xCenter);
+                    int zSym = zCenter - (z - zCenter);
 
-        for(int i = length * -1; i < length / 2; i++){
-            for(int j = length * -1; j < length; j++){
-                nutrientMapArray[x+i, z+j] = updateValue;// * ((length - Mathf.Abs(j))/length);
+                    float updateUpdateValue = updateValue * (1 - (radius - dist)/(radius));
+                    
+                    nutrientMapArray[x   , z   ] = updateUpdateValue;
+                    nutrientMapArray[x   , zSym] = updateUpdateValue;
+                    nutrientMapArray[xSym, z   ] = updateUpdateValue;
+                    nutrientMapArray[xSym, zSym] = updateUpdateValue;
+                }
             }
         }
-
-        // int end = 30;
-        // for(int i = 1; i < end; i++){
-        //     nutrientMapArray[x+(i*1), z+(i*1)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x+(i*0), z+(i*1)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x-(i*1), z+(i*1)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x+(i*1), z+(i*0)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x+(i*0), z+(i*0)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x-(i*1), z+(i*0)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x+(i*1), z-(i*1)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x+(i*0), z-(i*1)] = updateValue * (end-i) * 0.1f;
-        //     nutrientMapArray[x-(i*1), z-(i*1)] = updateValue * (end-i) * 0.1f;
-        // }
-
     }
 
     // Probably a terrible idea, but here we do a one-time scan through the map
@@ -103,24 +100,42 @@ public class NutrientMap : MonoBehaviour {
         for(int y = 0; y < t.terrainData.alphamapWidth; y++){
             for(int x = 0; x < t.terrainData.alphamapHeight; x++){
 
-                if( nutrientMapArray[x, y] > 0.3f){
-                    alphaMaps[y, x, 0] = 1; // grass texture
-                    alphaMaps[y, x, 1] = 0; // dying grass texture
-                    alphaMaps[y, x, 2] = 0; // sand texture
-                } 
-                else if( nutrientMapArray[x, y] > 0.2f){
-                    alphaMaps[y, x, 0] = 0; // grass texture
-                    alphaMaps[y, x, 1] = 1; // dying grass texture
-                    alphaMaps[y, x, 2] = 0; // sand texture
-                }
-                else {
-                    alphaMaps[y, x, 0] = 0; // grass texture
-                    alphaMaps[y, x, 1] = 0; // dying grass texture
-                    alphaMaps[y, x, 2] = 1; // sand texture
-                }
+                alphaMaps[y, x, 0] =     nutrientMapArray[x, y]; // grass texture
+                alphaMaps[y, x, 2] = 1 - nutrientMapArray[x, y]; // sand texture
+                //alphaMaps[y, x, 1] = 0; // dying grass texture
+                // if( nutrientMapArray[x, y] > 0.3f){
+                //     alphaMaps[y, x, 0] = 1; // grass texture
+                //     alphaMaps[y, x, 1] = 0; // dying grass texture
+                //     alphaMaps[y, x, 2] = 0; // sand texture
+                // } 
+                // else if( nutrientMapArray[x, y] > 0.2f){
+                //     alphaMaps[y, x, 0] = 0; // grass texture
+                //     alphaMaps[y, x, 1] = 1; // dying grass texture
+                //     alphaMaps[y, x, 2] = 0; // sand texture
+                // }
+                // else {
+                //     alphaMaps[y, x, 0] = 0; // grass texture
+                //     alphaMaps[y, x, 1] = 0; // dying grass texture
+                //     alphaMaps[y, x, 2] = 1; // sand texture
+                // }
             }
         }
 
         t.terrainData.SetAlphamaps(0, 0, alphaMaps);
     }
+
+    // public float[,] circleAround(int xCenter, int yCenter, int radius){
+    //     for(int x = xCenter - radius; x < xCenter; x++){
+    //         for(int y = yCenter - radius; y < yCenter; y++){
+    //             if( (x-xCenter)*(x-xCenter) + (y-yCenter)*(y-yCenter) <= radius*radius ){
+    //                 int xSym = xCenter - (x - xCenter);
+    //                 int ySym = yCenter - (y - yCenter);
+    //                 nutrientMapArray[x, y] = 
+    //                 nutrientMapArray[x, ySym] = 
+    //                 nutrientMapArray[xSym, y] = 
+    //                 nutrientMapArray[xSym, ySym] = 
+    //             }
+    //         }
+    //     }
+    // }
 }

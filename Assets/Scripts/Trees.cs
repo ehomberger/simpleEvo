@@ -109,7 +109,7 @@ public class Trees : Organic {
 
 	// Determine the needs of the tree to survive
 	public override void setNutritionalNeeds(){
-		nutritionalNeeds = volume;
+		nutritionalNeeds = 0.1f * volume;
 	}
 
 	// Scale of trees is linear, should missenseMutate with some lnx function
