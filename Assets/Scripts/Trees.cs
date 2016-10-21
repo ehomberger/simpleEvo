@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class Trees : Organic {
 
 	public int differences;
-
-
+	private Transform treeTrunk;
+	
 	//string[] perfect;
 	new void Start(){
 		base.Start ();
@@ -15,7 +15,8 @@ public class Trees : Organic {
         base.deltaScale = 1;
         frameShiftChance = 5; //1 is .5%, 2 is 1%, so on
 		setColor();
-		setReproductiveRange(15);
+		setReproductiveRange(15);//15 isn't anything special. worry about this later
+		setTreeTrunk();
 		differences = 0;
 
 // 		perfect = new string[3];
@@ -42,15 +43,22 @@ public class Trees : Organic {
 		}
 
 	}
+	//meirl
+	public void tryToDie(){
+		checkDeath();
+	}
 
+	// Find other trees near this one, pick one at random (that should change) 
+	// and create offspring with shared DNA and possibly mutated genes. 
+	// Offspring is placed on map 
 	public override float reproduce(){
 		Debug.Log ("Reproducing");
 		List<GameObject> options = base.getNearby("Tree");
 		Trees offspring;
-		int   random;
 		float randomX, randomZ;
+		int   random;
 		DNA   offspringDNA = new DNA(numGenes);
-		DNA   chosen = new DNA(numGenes);;
+		DNA   chosen = new DNA(numGenes);
 
 		Debug.Log ("choosing mate from " + options.Count + " options ");
 
@@ -63,7 +71,8 @@ public class Trees : Organic {
 		else {
 			offspringDNA = DNA;
 		}
-
+		// Run the mutations on these genes, probability of occuring is built in
+		// so there's not a 100% chance that these will happen
 		offspringDNA.missenseMutate();
 		offspringDNA.frameShiftInsert();
 
@@ -96,15 +105,22 @@ public class Trees : Organic {
 		return 10;
 	}
 
+	// Determine the needs of the tree to survive
+	public override void setNutritionalNeeds(){
+		nutritionalNeeds = volume;
+	}
+
 	// Scale of trees is linear, should missenseMutate with some lnx function
 	public override void setNutritionFactor(float root){
 		nutritionFactor = Mathf.Pow(nutrition, 1.0f / root);
 	}
 
+	// Set the amount the tree changes scale every update
 	public override void setDeltaScale(float top){
 		deltaScale = nutritionFactor * (top / scale);
 	}
 
+	// Update the tree's scale
 	public override void updateScale(){
 		setDeltaScale(base.nutritionLimiter * 0.0005f);
 		scale += deltaScale;
@@ -112,13 +128,32 @@ public class Trees : Organic {
 		transform.localScale = new Vector3(scale, scale, scale);
 	}
 
+	// Initialization function to give tree initial scale
 	public override void setScale(){
 		scale = 0.05f;
 		transform.localScale = new Vector3(scale, scale, scale);
 	}
 
+	// Set volume of tree, used in calculating how much food the tree needs
+	// Currently just based on volume of the transform child with tag "Trunk"
+	// (i.e. the tree's trunk)
+	public override void setVolume(){
+		volume = (float)treeTrunk.GetComponent<MeshRenderer>().bounds.size.x;
+		volume *= (float)treeTrunk.GetComponent<MeshRenderer>().bounds.size.z;
+		volume *= (float)treeTrunk.GetComponent<MeshRenderer>().bounds.size.y;
+	}
+
 	public override void setReproductiveRange(int multiplier){
 		reproductiveRange = (int)(multiplier * Mathf.Log(scale + 0.9f) + 5.0f);
+	}
+
+	public void setTreeTrunk(){
+		foreach(Transform child in transform){
+			if(child.tag == "Trunk"){
+				treeTrunk = child;
+				return;
+			}
+		}
 	}
 }
 
