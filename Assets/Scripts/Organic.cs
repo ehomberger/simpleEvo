@@ -83,6 +83,7 @@ public abstract class Organic : MonoBehaviour {
 		}
 	}
 
+
 	public List<GameObject> getNearby (string targetTag){
 		Collider[] options = Physics.OverlapSphere (this.transform.position, 30);
 		List<GameObject> nearby = new List<GameObject> ();
@@ -149,7 +150,7 @@ public abstract class Organic : MonoBehaviour {
 	// 
 	public void setNutrition (){
 		nutrition = myTerrain.GetComponent<NutrientMap>().getValue (transform.position);
-		myTerrain.GetComponent<NutrientMap>().setValue (transform.position, nutrition - 0.001f);
+		myTerrain.GetComponent<NutrientMap>().setValue (transform.position, nutrition - 0.0001f);
 	}
 
 	/********************* abstracts *********************/ 

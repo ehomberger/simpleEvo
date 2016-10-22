@@ -34,7 +34,6 @@ public class Trees : Organic {
 	//
 	public override void checkDeath(){
 		float threshold;
-		//		threshold = 50 +(age - averageAge*2) + (differences * 2);
 		threshold = 25; //placeholder value, ~25% of trees will die 
 		int attempt;
 

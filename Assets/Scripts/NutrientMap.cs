@@ -10,23 +10,24 @@ public class NutrientMap : MonoBehaviour {
     private float[,]  nutrientMapArray; // Name other arrays and textures like this
     private int       mapDimension;
     private Terrain   t;
-    private int       nextUpdate;
-    private float     timer;
+    public  int       nextUpdate;
+    public  float     timer;
 
     // Initialization 
     public void Start(){
         if( nutrientMapTex == null )
             Debug.Log("You forgot your nutrientMapTexture");
 
-        timer = 0; 
-        nextUpdate = 1;
-        t = Terrain.activeTerrain;
-        mapDimension = 513;
-        nutrientMapArray   = new float[mapDimension, mapDimension];
-        convertImageTo2DArray(nutrientMapTex);
+        timer = 0;                      // set timer to 0
+        nextUpdate = 1;                 // time between map udpates
+        t = Terrain.activeTerrain;      // find the active terrain in scene
+        mapDimension = 513;             // bad, bad magic numbers, issues with getting the size of the map at runtime
+        nutrientMapArray = new float[mapDimension, mapDimension]; // init nutrient map array
+        convertImageTo2DArray(nutrientMapTex);                    // convert the given nutrient map image to the array
         Debug.Log("nutrientMapArray dimensions are " + nutrientMapArray.GetLength(0) + "x" + nutrientMapArray.GetLength(1) );
     }
 
+    // Unity Update
     public void Update(){
         timer += Time.deltaTime;
 
@@ -36,7 +37,8 @@ public class NutrientMap : MonoBehaviour {
             timer = 0;
         }
     }
-    // Get the NutrientMapArray
+
+    // Get the Nutrient Map Array
     public float[,] getNutrientMapArray(){
         return nutrientMapArray;
     }
@@ -57,12 +59,16 @@ public class NutrientMap : MonoBehaviour {
         int zCenter = (int)position.z;
         nutrientMapArray[xCenter, zCenter] = updateValue;
 
-        if( nutrientMapArray[xCenter, zCenter] < 0) {
-            updateValue = 0;
-            nutrientMapArray[xCenter, zCenter] = 0;
-        }
+        // if( nutrientMapArray[xCenter, zCenter] < 0) {
+        //     updateValue = 0;
+        //     nutrientMapArray[xCenter, zCenter] = 0;
+        // }
 
-        int radius = 10;
+
+        // Circle with radius 20 around tree will be affected
+        // We find one quater of the circle, then use symmetry because speed
+        // Update value gets placed in every array index within radius around tree
+        int radius = 25;
         for(int x = xCenter - radius; x <= xCenter; x++){
             for(int z = zCenter - radius; z <= zCenter; z++){
                 int dist = (x-xCenter)*(x-xCenter) + (z-zCenter)*(z-zCenter); 
@@ -71,7 +77,10 @@ public class NutrientMap : MonoBehaviour {
                     int xSym = xCenter - (x - xCenter);
                     int zSym = zCenter - (z - zCenter);
 
-                    float updateUpdateValue = updateValue * (1 - (radius - dist)/(radius));
+                    // This is just a gradient, farther away gets affected less
+                    // Father forgive me for this name, we grow farther from your
+                    // light every day
+                    float updateUpdateValue = updateValue;// - (updateValue * (1 - dist/radius));
                     
                     nutrientMapArray[x   , z   ] = updateUpdateValue;
                     nutrientMapArray[x   , zSym] = updateUpdateValue;
@@ -94,30 +103,64 @@ public class NutrientMap : MonoBehaviour {
     }
 
     // Update the alpha maps of the terrain based on nutrientMapArray values
+    // Right now, gradient between the two maps is used, 
     public void updateMapAlphas(){
         var alphaMaps = new float[t.terrainData.alphamapWidth, t.terrainData.alphamapHeight, t.terrainData.alphamapLayers];
 
         for(int y = 0; y < t.terrainData.alphamapWidth; y++){
             for(int x = 0; x < t.terrainData.alphamapHeight; x++){
 
-                alphaMaps[y, x, 0] =     nutrientMapArray[x, y]; // grass texture
-                alphaMaps[y, x, 2] = 1 - nutrientMapArray[x, y]; // sand texture
+                // alphaMaps[y, x, 0] = 2 * nutrientMapArray[x, y]; // grass texture
+                // alphaMaps[y, x, 2] = 1 - nutrientMapArray[x, y]; // sand texture
                 //alphaMaps[y, x, 1] = 0; // dying grass texture
-                // if( nutrientMapArray[x, y] > 0.3f){
-                //     alphaMaps[y, x, 0] = 1; // grass texture
-                //     alphaMaps[y, x, 1] = 0; // dying grass texture
-                //     alphaMaps[y, x, 2] = 0; // sand texture
-                // } 
-                // else if( nutrientMapArray[x, y] > 0.2f){
-                //     alphaMaps[y, x, 0] = 0; // grass texture
-                //     alphaMaps[y, x, 1] = 1; // dying grass texture
-                //     alphaMaps[y, x, 2] = 0; // sand texture
-                // }
-                // else {
-                //     alphaMaps[y, x, 0] = 0; // grass texture
-                //     alphaMaps[y, x, 1] = 0; // dying grass texture
-                //     alphaMaps[y, x, 2] = 1; // sand texture
-                // }
+                if( nutrientMapArray[x, y] > 0.4f){
+                    alphaMaps[y, x, 0] = 1; // grass 0
+                    alphaMaps[y, x, 1] = 0; // grass 1
+                    alphaMaps[y, x, 2] = 0; // grass 2
+                    alphaMaps[y, x, 3] = 0; // grass 3
+                    alphaMaps[y, x, 4] = 0; // grass 4  
+                    alphaMaps[y, x, 5] = 0; // grass 5
+                } 
+                else if( nutrientMapArray[x, y] > 0.3f){
+                    alphaMaps[y, x, 0] = 0; // grass 0
+                    alphaMaps[y, x, 1] = 1; // grass 1
+                    alphaMaps[y, x, 2] = 0; // grass 2
+                    alphaMaps[y, x, 3] = 0; // grass 3
+                    alphaMaps[y, x, 4] = 0; // grass 4
+                    alphaMaps[y, x, 5] = 0; // grass 5
+                }
+                else if( nutrientMapArray[x, y] > 0.2f){
+                    alphaMaps[y, x, 0] = 0; // grass 0
+                    alphaMaps[y, x, 1] = 0; // grass 1
+                    alphaMaps[y, x, 2] = 1; // grass 2
+                    alphaMaps[y, x, 3] = 0; // grass 3
+                    alphaMaps[y, x, 4] = 0; // grass 4
+                    alphaMaps[y, x, 5] = 0; // grass 5
+                }
+                else if( nutrientMapArray[x, y] > 0.1f){
+                    alphaMaps[y, x, 0] = 0; // grass 0
+                    alphaMaps[y, x, 1] = 0; // grass 1
+                    alphaMaps[y, x, 2] = 0; // grass 2
+                    alphaMaps[y, x, 3] = 1; // grass 3
+                    alphaMaps[y, x, 4] = 0; // grass 4
+                    alphaMaps[y, x, 5] = 0; // grass 5
+                }
+                else if( nutrientMapArray[x, y] > 0.05f){
+                    alphaMaps[y, x, 0] = 0; // grass 0
+                    alphaMaps[y, x, 1] = 0; // grass 1
+                    alphaMaps[y, x, 2] = 0; // grass 2
+                    alphaMaps[y, x, 3] = 0; // grass 3
+                    alphaMaps[y, x, 4] = 1; // grass 4
+                    alphaMaps[y, x, 5] = 0; // grass 5
+                }
+                else {
+                    alphaMaps[y, x, 0] = 0; // grass 0
+                    alphaMaps[y, x, 1] = 0; // grass 1
+                    alphaMaps[y, x, 2] = 0; // grass 2
+                    alphaMaps[y, x, 3] = 0; // grass 3
+                    alphaMaps[y, x, 4] = 0; // grass 4
+                    alphaMaps[y, x, 5] = 1; // grass 5
+                }
             }
         }
 
